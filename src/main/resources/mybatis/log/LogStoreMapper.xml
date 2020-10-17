@@ -20,18 +20,23 @@
   <sql id="Blob_Column_List">
     message
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+  <select id="selectBetweenLogDate" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from tb_log_store
-    where id = #{id,jdbcType=BIGINT}
+    where log_date between #{startDate,jdbcType=INTEGER} and #{endDate,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from tb_log_store
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
+  <select id="selectByLogDate" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_log_store
+    where log_date = #{logDate,jdbcType=INTEGER}
+  </select>
 
   <insert id="insertSelective" parameterType="com.songjy.log.sharding.sphere.model.LogStore">
     insert into tb_log_store
@@ -39,9 +44,7 @@
       <if test="id != null">
         id,
       </if>
-      <if test="logDate != null">
-        log_date,
-      </if>
+      log_date,
       <if test="logTime != null">
         log_time,
       </if>
@@ -68,9 +71,7 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="logDate != null">
-        #{logDate,jdbcType=INTEGER},
-      </if>
+      #{logDate,jdbcType=INTEGER},
       <if test="logTime != null">
         #{logTime,jdbcType=TIME},
       </if>
@@ -94,5 +95,6 @@
       </if>
     </trim>
   </insert>
+
 
 </mapper>

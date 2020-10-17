@@ -11,10 +11,12 @@ import com.songjy.log.sharding.sphere.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -57,5 +59,25 @@ public class LogStoreServiceImpl implements ILogStoreService, InitializingBean {
                 log.error(e.getMessage(), e);
             }
         });
+    }
+
+    @Override
+    public List<LogStore> selectByLogDate(LocalDate logDate) {
+
+        logDate = null == logDate ? LocalDate.now() : logDate;
+
+        return logStoreMapper.selectByLogDate(Integer.parseInt(StringUtils.remove(logDate.toString(), '-')));
+    }
+
+    @Override
+    public List<LogStore> selectBetweenLogDate(LocalDate startDate, LocalDate endDate) {
+
+        startDate = null == startDate ? LocalDate.now() : startDate;
+        endDate = null == endDate ? LocalDate.now() : endDate;
+
+        int start = Integer.parseInt(StringUtils.remove(startDate.toString(), '-'));
+        int end = Integer.parseInt(StringUtils.remove(endDate.toString(), '-'));
+
+        return logStoreMapper.selectBetweenLogDate(start, end);
     }
 }
