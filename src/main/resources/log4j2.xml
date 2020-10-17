@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+    <Properties>
+        <Property name="baseDir">target/logs</Property>
+        <Property name="fileNameInfo">log-sharding-sphere-info.log</Property>
+        <Property name="fileNameError">log-sharding-sphere-error.log</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="STDOUT">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %l - %msg%n"/>
+        </Console>
+
+        <!--使用RollingFile立马写入文件，而RollingRandomAccessFile达到缓冲大小后方才写入文件，往往因启动日志较少造成日志没有写入文件错觉-->
+        <!--info日志入文件-->
+        <RollingRandomAccessFile name="RollingFileInfo"
+                                 fileName="${baseDir}/${fileNameInfo}"
+                                 ImmediateFlush="false"
+                                 filePattern="${baseDir}/${date:yyyy-MM}/log-sharding-sphereinfo-%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="%d %-5level [%t]%l - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="200 MB"/>
+                <TimeBasedTriggeringPolicy interval="24" modulate="true"/>
+            </Policies>
+            <!--自动删除超过120天的日志压缩文件-->
+            <DefaultRolloverStrategy>
+                <Delete basePath="${baseDir}" maxDepth="2">
+                    <IfFileName glob="*/log-sharding-sphereinfo-*.log"/>
+                    <IfLastModified age="5d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <!--错误日志入文件-->
+        <RollingRandomAccessFile name="RollingFileError"
+                                 fileName="${baseDir}/${fileNameError}"
+                                 ImmediateFlush="false"
+                                 filePattern="${baseDir}/${date:yyyy-MM}/log-sharding-sphereerror-%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="%d %-5level [%t]%l - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="200 MB"/>
+                <TimeBasedTriggeringPolicy interval="24" modulate="true"/>
+            </Policies>
+            <!--自动删除超过120天的日志压缩文件-->
+            <DefaultRolloverStrategy>
+                <Delete basePath="${baseDir}" maxDepth="2">
+                    <IfFileName glob="*/log-sharding-sphereerror-*.log"/>
+                    <IfLastModified age="5d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+    </Appenders>
+    <Loggers>
+        <logger name="com.songjy" additivity="false" level="info" includeLocation="true">
+            <AppenderRef ref="RollingFileInfo" level="info"/>
+            <AppenderRef ref="RollingFileError" level="error"/>
+        </logger>
+
+        <Root level="info" includeLocation="true">
+            <AppenderRef ref="RollingFileError" level="warn"/>
+            <AppenderRef ref="STDOUT" level="info"/>
+        </Root>
+    </Loggers>
+</Configuration>
