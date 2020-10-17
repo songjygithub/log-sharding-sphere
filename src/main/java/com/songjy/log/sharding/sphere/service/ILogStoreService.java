@@ -21,12 +21,9 @@ public interface ILogStoreService {
     /**
      * 根据主键ID查询单个记录
      *
-     * 执行报错：java.lang.IllegalStateException: Inline strategy cannot support this type sharding:RangeRouteValue(columnName=log_date, tableName=tb_log_store, valueRange=[20201016‥20201017])
-     *
      * @param startDate 开始时间：yyyyMMdd
      * @param endDate   结束时间：yyyyMMdd
      * @return 记录
      */
-    @Deprecated
     List<LogStore> selectBetweenLogDate(LocalDate startDate, LocalDate endDate);
 }

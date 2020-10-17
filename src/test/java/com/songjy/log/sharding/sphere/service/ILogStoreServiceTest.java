@@ -28,8 +28,9 @@ public class ILogStoreServiceTest {
 
     @Test
     void selectBetweenLogDateTest() {
-        List<LogStore> logStores = logStoreService.selectBetweenLogDate(LocalDate.now().minusDays(1L), LocalDate.now());
+        List<LogStore> logStores = logStoreService.selectBetweenLogDate(LocalDate.now().minusDays(1), LocalDate.now());
         Assert.notEmpty(logStores);
+        logStores.forEach(e -> System.out.println(e.getId()));
     }
 
 }
