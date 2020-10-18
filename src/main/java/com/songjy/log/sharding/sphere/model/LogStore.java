@@ -50,4 +50,12 @@ public class LogStore implements Serializable {
      * 日志内容
      */
     private String message;
+    /**
+     * 日志界级别
+     */
+    private String level;
+    /**
+     * 错误堆栈
+     */
+    private String throwable;
 }

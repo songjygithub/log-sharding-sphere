@@ -38,5 +38,9 @@ public class LogStoreDto implements Serializable {
     private Date timestamp;
 
     private Location location;
+    /**
+     * 错误堆栈
+     */
+    private String throwable;
 
 }
